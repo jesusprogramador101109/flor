@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Flores con fondo</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column; /* para colocar texto arriba y video abajo */
+    }
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+    .mensaje {
+      position: relative;
+      z-index: 2;
+      color: #fff;
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px rgba(255,255,255,0.8);
+      font-family: "Segoe UI", sans-serif;
+    }
+    video {
+      position: relative;
+      z-index: 1;
+      max-width: 90vw;   /* nunca exceder ancho ventana */
+      max-height: 80vh;  /* deja espacio para el texto */
+      width: auto;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.3);
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fondo estrellado -->
+  <canvas id="stars"></canvas>
+
+  <!-- Mensaje arriba -->
+  <div class="mensaje">Para que no seas espectadora ✨</div>
+
+  <!-- Tu video debajo -->
+  <video autoplay loop muted playsinline>
+    <source src="flores.mp4" type="video/mp4">
+    Tu navegador no soporta video.
+  </video>
+
+  <script>
+    // --- Fondo estrellado animado ---
+    const canvas=document.getElementById('stars');
+    const ctx=canvas.getContext('2d');
+    function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+    addEventListener('resize',resize);resize();
+    const stars=Array.from({length:120},()=>({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*1.2,
+      o:Math.random()
+    }));
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(const s of stars){
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(255,255,255,${0.5+0.5*Math.sin(Date.now()/500+s.o)})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>
